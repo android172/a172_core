@@ -30,6 +30,7 @@ static_assert(
 MemorySystem::MemoryMap MemorySystem::_memory_map = {};
 Allocator**             MemorySystem::_allocator_array =
     MemorySystem::initialize_allocator_array(MemorySystem::_memory_map);
+MemoryTagType MemorySystem::_aa_size = 0;
 
 void* MemorySystem::allocate(uint64 size, const MemoryTag tag) {
     auto allocator = _allocator_array[tag.id];
@@ -111,6 +112,9 @@ void MemorySystem::register_tag(const MemoryTag& tag, Allocator& allocator) {
     memory_map[allocator->start()]         = BaseMemoryTags.tag
 
 Allocator** MemorySystem::initialize_allocator_array(MemoryMap& memory_map) {
+    _aa_size = MemoryTag::id_count;
+
+    // Reserve memory for AA
     const auto allocator_array = new Allocator*[MemoryTag::id_count]();
 
     // Define used allocators
