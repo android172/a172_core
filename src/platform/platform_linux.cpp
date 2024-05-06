@@ -14,13 +14,13 @@
 namespace CORE_NAMESPACE {
 
 namespace platform {
-    static float64 get_absolute_time() {
+    float64 get_absolute_time() {
         struct timespec now;
         clock_gettime(CLOCK_MONOTONIC, &now);
         return now.tv_sec + now.tv_nsec * 1e-9;
     }
 
-    static void sleep(uint64 ms) {
+    void sleep(uint64 ms) {
 #    if _POSIX_C_SOURCE >= 199309L
         struct timespec ts;
         ts.tv_sec  = ms / 1000;

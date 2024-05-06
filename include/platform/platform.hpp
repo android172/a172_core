@@ -17,19 +17,19 @@ class InputSystem;
 namespace platform {
     // Not important for the rest of the app
     namespace __details {
-        const static constexpr int n = 1;
+        const constexpr int n = 1;
     };
 
     /// @brief True if little endian byte configuration is used by this system
-    static const bool is_little_endian = *(char*) &__details::n == 1;
+    const bool is_little_endian = *(char*) &__details::n == 1;
 
     /// @brief Get current internal clock time in seconds
     /// @return Time in seconds
-    static float64 get_absolute_time();
+    float64 get_absolute_time();
 
     /// @brief Suspends the application process for the specified amount of time
     /// @param ms Time to sleep in miliseconds
-    static void sleep(uint64 ms);
+    void sleep(uint64 ms);
 
     /**
      * @brief A platform agnostic Console I/O class. Can only be used if the

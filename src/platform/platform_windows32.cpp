@@ -7,7 +7,7 @@
 namespace CORE_NAMESPACE {
 
 namespace platform {
-    static float64 get_absolute_time() {
+    float64 get_absolute_time() {
         LARGE_INTEGER frequency;
         LARGE_INTEGER counter;
 
@@ -32,7 +32,7 @@ namespace platform {
         return (float64) counter.QuadPart / (float64) frequency.QuadPart;
     }
 
-    static void sleep(uint64 ms) {
+    void sleep(uint64 ms) {
         Sleep(static_cast<DWORD>(ms)); //
     }
 
