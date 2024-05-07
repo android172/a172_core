@@ -256,8 +256,16 @@ template<typename T>
 string to_string(const CORE_NAMESPACE::Property<T>& in) {
     return std::to_string(in());
 }
+template<typename T>
+string to_string(const CORE_NAMESPACE::Property<T&>& in) {
+    return std::to_string(in());
+}
 template<>
 string to_string<String>(const CORE_NAMESPACE::Property<String>& in) {
+    return in();
+}
+template<>
+string to_string<String&>(const CORE_NAMESPACE::Property<String&>& in) {
     return in();
 }
 string to_string(const CORE_NAMESPACE::Vector<char>& in) {

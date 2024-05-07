@@ -1,3 +1,14 @@
+/**
+ * @file event.hpp
+ * @author Android172 (you@domain.com)
+ * @brief
+ * @version 0.1
+ * @date 2024-05-07
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #pragma once
 
 #include "delegate.hpp"

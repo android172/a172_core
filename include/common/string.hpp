@@ -207,6 +207,24 @@ class String : public std::string {
     static void add_to_string(String& out_string, T* const component) noexcept {
         out_string += std::to_string(component);
     }
+    template<typename T>
+    static void add_to_string(
+        String& out_string, const Property<T> component
+    ) noexcept {
+        add_to_string<T>(out_string, component());
+    }
+    template<typename T>
+    static void add_to_string(
+        String& out_string, const Property<T&> component
+    ) noexcept {
+        add_to_string<T>(out_string, component());
+    }
+    template<typename T>
+    static void add_to_string(
+        String& out_string, const Property<T&&> component
+    ) noexcept {
+        add_to_string<T>(out_string, component());
+    }
 };
 
 template<>
