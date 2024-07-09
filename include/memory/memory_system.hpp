@@ -4,7 +4,6 @@
 #include <type_traits>
 #include <memory>
 
-#include "defines.hpp"
 #include "memory_allocators/allocator.hpp"
 
 namespace CORE_NAMESPACE {

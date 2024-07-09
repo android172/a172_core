@@ -1,3 +1,14 @@
+/**
+ * @file logger.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Defines static logger class for logging related functionalities.
+ * @version 0.1
+ * @date 2024-05-24
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #pragma once
 
 #include "string.hpp"
@@ -5,6 +16,10 @@
 
 namespace CORE_NAMESPACE {
 
+/**
+ * @brief Static class that contains all logging related functionalities. Should
+ * not be constructed.
+ */
 class Logger {
   private:
     Logger() {}

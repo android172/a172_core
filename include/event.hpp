@@ -1,7 +1,7 @@
 /**
  * @file event.hpp
  * @author Android172 (you@domain.com)
- * @brief
+ * @brief Provides simple event class implementation.
  * @version 0.1
  * @date 2024-05-07
  *
@@ -12,17 +12,39 @@
 #pragma once
 
 #include "delegate.hpp"
-#include "vector.hpp"
+#include "container/vector.hpp"
 #include "outcome.hpp"
 
 namespace CORE_NAMESPACE {
 
+/**
+ * @brief Event object. When invoked (triggered) also invokes all subscribing
+ * functions with same function arguments.
+ */
 template<typename Signature>
-class Event;
+class Event {
+  private:
+    template<typename R, typename... Args>
+    static Outcome remove_delegate(
+        Vector<Delegate<R, Args...>*> callbacks, Delegate<R, Args...>* delegate
+    ) {
+        auto iter = callbacks.begin();
+        while (iter != callbacks.end()) {
+            if (**iter == *delegate) break;
+            iter++;
+        }
+        if (iter == callbacks.end()) return Outcome::Failed;
+
+        callbacks.erase(iter);
+        del(*iter);
+
+        return Outcome::Successful;
+    }
+};
 
 /**
- * @brief Event object. When invoked (when triggered) also invokes all
- * subscribing functions with same function arguments.
+ * @brief Event object. When invoked (triggered) also invokes all subscribing
+ * functions with same function arguments.
  *
  * @tparam R Return type
  * @tparam Args Argument types
@@ -109,12 +131,21 @@ class Event<R(Args...)> {
         return result;
     }
 
+    /**
+     * @brief Passes @p callback to subscribe.
+     */
     inline void operator+=(std::function<R(Args...)> callback) {
         subscribe(callback);
     }
+    /**
+     * @brief Passes @p callback to unsubscribe.
+     */
     inline void operator-=(std::function<R(Args...)> callback) {
         unsubscribe(callback);
     }
+    /**
+     * @brief Calls invoke with passed \p arguments.
+     */
     inline R operator()(Args... arguments) { return invoke(arguments...); }
 };
 
@@ -203,30 +234,22 @@ class Event<void(Args...)> {
         }
     }
 
+    /**
+     * @brief Passes @p callback to subscribe.
+     */
     inline void operator+=(std::function<void(Args...)> callback) {
         subscribe(callback);
     }
+    /**
+     * @brief Passes @p callback to unsubscribe.
+     */
     inline void operator-=(std::function<void(Args...)> callback) {
         unsubscribe(callback);
     }
+    /**
+     * @brief Calls invoke with passed \p arguments.
+     */
     inline void operator()(Args... arguments) { return invoke(arguments...); }
 };
-
-template<typename R, typename... Args>
-Outcome remove_delegate(
-    Vector<Delegate<R, Args...>*> callbacks, Delegate<R, Args...>* delegate
-) {
-    auto iter = callbacks.begin();
-    while (iter != callbacks.end()) {
-        if (**iter == *delegate) break;
-        iter++;
-    }
-    if (iter == callbacks.end()) return Outcome::Failed;
-
-    callbacks.erase(iter);
-    del(*iter);
-
-    return Outcome::Successful;
-}
 
 } // namespace CORE_NAMESPACE

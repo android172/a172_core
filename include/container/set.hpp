@@ -1,3 +1,14 @@
+/**
+ * @file set.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Defines common set container
+ * @version 0.1
+ * @date 2024-05-24
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #pragma once
 
 #include <set>

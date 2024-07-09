@@ -2,10 +2,10 @@
 
 #include <string>
 
-#include "defines.hpp"
+#include "common/defines.hpp"
 #include "result.hpp"
-#include "error_types.hpp"
-#include "vector.hpp"
+#include "common/error_types.hpp"
+#include "container/vector.hpp"
 
 namespace CORE_NAMESPACE {
 

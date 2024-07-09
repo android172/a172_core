@@ -4,7 +4,7 @@
 
 #include "string.hpp"
 #include "result.hpp"
-#include "error_types.hpp"
+#include "common/error_types.hpp"
 #include "file.hpp"
 
 namespace CORE_NAMESPACE {

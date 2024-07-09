@@ -1,46 +1,61 @@
 #pragma once
 
 #include <functional>
+#include <mutex>
 
 namespace CORE_NAMESPACE {
-
-class __BaseMutex {
-  public:
-    virtual void lock() {};
-    virtual void unlock() {};
-};
 
 /**
  * @brief Static class holding a list of functions for parallel multithreaded
  * execution of code.
  */
-class Parallel {
-  private:
-    // Define a type trait to check for the existence of 'iterator' type
-    template<typename T, typename = std::void_t<>>
-    struct has_iterator //
-        : std::false_type {};
-    template<typename T>
-    struct has_iterator<T, std::void_t<typename T::iterator>> //
-        : std::true_type {};
+namespace parallel {
+    // -------------------------------------------------------------------------
+    // Mutex
+    // -------------------------------------------------------------------------
 
-    // Not initialize-able
-    Parallel() {}
-    ~Parallel() {}
-
-    // Prevent accidental copying
-    Parallel(Parallel const&)            = delete;
-    Parallel& operator=(Parallel const&) = delete;
-
-  public:
     /**
      * @brief Mutex lock. Allows only one thread to enter code between @p
      * `lock()` and @p `unlock()` calls.
      */
-    class Mutex : public __BaseMutex {};
+    class Mutex : public std::mutex {};
 
-  public:
+    // -------------------------------------------------------------------------
+    // Range
+    // -------------------------------------------------------------------------
+
+    // TODO: Reintroduce old code
+
+    template<typename T>
+    class Range { //: public tbb::blocked_range<T> {
+      public:
+        // using tbb::blocked_range<T>::blocked_range;
+
+        // Range(T begin, T end, uint64 grain_size = 1)
+        //     : tbb::blocked_range<T>(begin, end, grain_size) {}
+
+        // template<
+        //     typename ArrayType,
+        //     typename = std::enable_if_t<has_iterator<ArrayType>::value>>
+        // Range(ArrayType array_like, uint64 grain_size = 1)
+        //     : Range<T>(array_like.begin(), array_like.end(), grain_size) {}
+    };
+
+    template<typename T, typename V = T>
+    class Range2D { //: public tbb::blocked_range2d<T, V> {
+      public:
+        // using tbb::blocked_range2d<T>::blocked_range2d;
+    };
+
+    template<typename T, typename V = T, typename W = V>
+    class Range3D { //: public tbb::blocked_range3d<T, V, W> {
+      public:
+        // using tbb::blocked_range3d<T>::blocked_range3d;
+    };
+
+    // -------------------------------------------------------------------------
     // Parallel algorithms
+    // -------------------------------------------------------------------------
 
     /**
      * @brief Sort data from range [begin, end) in increasing order. Uses
@@ -85,87 +100,98 @@ class Parallel {
         // tbb::parallel_sort(begin, end, comp);
     }
 
-  private:
-    // Parallel for loop
-    typedef void* var;
-    typedef void* iterator_begin;
-    typedef void* iterator_end;
-    typedef int*  from;
-    typedef int*  to;
-    typedef void* collection;
+    namespace __detail__ {
+        template<typename T>
+        struct Loop {
+            Loop() {};
 
-  public:
-    template<typename T>
-    struct __Loop__ {
-        __Loop__() {};
+            T from;
+            T to;
 
-        T from;
-        T to;
+            Loop& set_from(T from) {
+                this->from = from;
+                return *this;
+            }
+            Loop& set_to(T to) {
+                this->to = to;
+                return *this;
+            }
 
-        __Loop__& set_from(T from) {
-            this->from = from;
-            return *this;
+            void operator=(std::function<void(T)> callback) {
+                // tbb::parallel_for(
+                //     tbb::blocked_range<T>(from, to),
+                //     [&callback](tbb::blocked_range<T> range) {
+                //         for (T i = range.begin(); i != range.end(); i++)
+                //             callback(i);
+                //     }
+                // );
+            }
+
+            void operator=(std::function<void(Range<T>)> callback) {
+                // tbb::parallel_for(
+                //     Range<T>(from, to),
+                //     [&callback](Range<T> range) { callback(range); }
+                // );
+            }
+        };
+
+        template<typename T>
+        static Loop<T> get_for_each_2(const T& type) {
+            return Loop<T>();
         }
-        __Loop__& set_to(T to) {
-            this->to = to;
-            return *this;
+        template<typename T>
+        static Loop<T> get_for_each_2(T&& type) {
+            return Loop<T>();
         }
 
-        void operator=(std::function<void(T)> callback) {
-            // tbb::parallel_for(
-            //     tbb::blocked_range<T>(from, to),
-            //     [&callback](tbb::blocked_range<T> range) {
-            //         for (T i = range.begin(); i != range.end(); i++)
-            //             callback(i);
-            //     }
-            // );
+        template<typename T>
+        static Loop<typename T::iterator> get_for_each_3(const T& type) {
+            auto loop = Loop<typename T::iterator>();
+            loop.from = type.begin();
+            loop.to   = type.end();
+            return loop;
         }
-    };
+        template<typename T>
+        static Loop<typename T::iterator> get_for_each_3(T&& type) {
+            auto loop = Loop<typename T::iterator>();
+            loop.from = type.begin();
+            loop.to   = type.end();
+            return loop;
+        }
 
-    template<typename T>
-    static __Loop__<T> __parallel_for_get__(T& type) {
-        return __Loop__<T>();
-    }
-    template<typename T>
-    static __Loop__<T> __parallel_for_get__(T&& type) {
-        return __Loop__<T>();
-    }
+        template<typename T>
+        static Loop<T> get_for_range(const Range<T>& range) {
+            auto loop = Loop<T>();
+            loop.from = range.begin();
+            loop.to   = range.end();
+            return loop;
+        }
+        template<typename T>
+        static Loop<T> get_for_range(Range<T>&& range) {
+            auto loop = Loop<T>();
+            loop.from = range.begin();
+            loop.to   = range.end();
+            return loop;
+        }
+    } // namespace __detail__
 
-    template<typename T>
-    static __Loop__<typename T::iterator> __parallel_for_get_it__(T& type) {
-        auto loop = __Loop__<typename T::iterator>();
-        loop.from = type.begin();
-        loop.to   = type.end();
-        return loop;
-    }
-    template<typename T>
-    static __Loop__<typename T::iterator> __parallel_for_get_it__(T&& type) {
-        auto loop = __Loop__<typename T::iterator>();
-        loop.from = type.begin();
-        loop.to   = type.end();
-        return loop;
-    }
-
-    static void for_loop(var, from, to);
-    static void for_loop(var, iterator_begin, iterator_end);
-    static void for_loop(var, collection);
-
-  public:
-  private:
-};
+} // namespace parallel
 
 #define for_loop_1(variable, begin, end)                                       \
-    __parallel_for_get__(begin).set_from(begin).set_to(end) =                  \
+    __detail__::get_for_each_2(begin).set_from(begin).set_to(end) =            \
         (std::function<void(variable)>) [&](variable)
 
 #define for_loop_2(variable, collection)                                       \
-    __parallel_for_get_it__(collection) =                                      \
+    __detail__::get_for_each_3(collection) =                                   \
         (std::function<void(variable)>) [&](variable)
 
 #define GET_FOR_LOOP_MACRO(_1, _2, _3, NAME, ...) NAME
 
-#undef for_loop
-#define for_loop(...)                                                          \
+#define for_each(...)                                                          \
     GET_FOR_LOOP_MACRO(__VA_ARGS__, for_loop_1, for_loop_2)(__VA_ARGS__)
+
+#define for_range(subrange, range)                                             \
+    __detail__::get_for_range(range) =                                         \
+        (std::function<void(parallel::subrange)>) [&](parallel::subrange)
 
 } // namespace CORE_NAMESPACE

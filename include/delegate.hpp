@@ -1,7 +1,7 @@
 /**
  * @file delegate.hpp
  * @author Android172 (you@domain.com)
- * @brief
+ * @brief Defines delegate classes for use with Events
  * @version 0.1
  * @date 2024-05-07
  *
@@ -11,7 +11,7 @@
 
 #pragma once
 
-#include "defines.hpp"
+#include "common/defines.hpp"
 
 #include <functional>
 

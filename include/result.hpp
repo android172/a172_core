@@ -27,6 +27,8 @@
 
 #pragma once
 
+#include "common/defines.hpp"
+
 #include <cstddef>          // std::size_t
 #include <type_traits>      // std::enable_if, std::is_constructible, etc
 #include <new>              // placement-new

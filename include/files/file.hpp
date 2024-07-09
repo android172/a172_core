@@ -2,9 +2,9 @@
 
 #include <fstream>
 
-#include "defines.hpp"
+#include "common/defines.hpp"
 #include "string.hpp"
-#include "vector.hpp"
+#include "container/vector.hpp"
 
 namespace CORE_NAMESPACE {
 

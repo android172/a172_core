@@ -1,6 +1,6 @@
 #pragma once
 
-#include "defines.hpp"
+#include "common/inlined_functions.hpp"
 
 namespace CORE_NAMESPACE {
 

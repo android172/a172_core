@@ -8,24 +8,22 @@ project(a172_core)
 
 # add sources
 file(GLOB_RECURSE SOURCES 
+    ${PROJECT_SOURCE_DIR}/test/*.cpp
     ${PROJECT_SOURCE_DIR}/src/*.cpp
     ${PROJECT_SOURCE_DIR}/src/**/*.cpp
     ${PROJECT_SOURCE_DIR}/include/*.h
     ${PROJECT_SOURCE_DIR}/include/**/*.h
     ${PROJECT_SOURCE_DIR}/include/*.hpp
     ${PROJECT_SOURCE_DIR}/include/**/*.hpp)
-# add_executable(${PROJECT_NAME}
-#     ${SOURCES})
-add_library(${PROJECT_NAME}
+add_executable(${PROJECT_NAME}
     ${SOURCES})
-
+# add_library(${PROJECT_NAME}
+#     ${SOURCES})
 
 # include directories
 target_include_directories(${PROJECT_NAME}
     PUBLIC
     include
-    include/common
-    include/containers
 )
 
 # link

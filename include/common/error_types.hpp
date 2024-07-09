@@ -1,7 +1,19 @@
+/**
+ * @file error_types.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Defines some common error types
+ * @version 0.1
+ * @date 2024-05-24
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #pragma once
 
+#include "types.hpp"
+
 #include <stdexcept>
-#include "defines.hpp"
 
 namespace CORE_NAMESPACE {
 

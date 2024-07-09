@@ -1,5 +1,7 @@
 #pragma once
 
+#include "common/defines.hpp"
+
 namespace CORE_NAMESPACE {
 
 template<class T>

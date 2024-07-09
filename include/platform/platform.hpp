@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "defines.hpp"
+#include "common/types.hpp"
 
 namespace CORE_NAMESPACE {
 
