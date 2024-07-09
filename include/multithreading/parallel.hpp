@@ -1,3 +1,15 @@
+/**
+ * @file parallel.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Provides a list of parallel algorithms in terms of `parallel`
+ * namespace.
+ * @version 0.1
+ * @date 2024-07-10
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #pragma once
 
 #include <functional>
