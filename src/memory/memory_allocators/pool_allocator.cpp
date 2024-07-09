@@ -6,6 +6,8 @@
 
 namespace CORE_NAMESPACE {
 
+#define ALLOCATOR_LOG "PoolAllocator :: "
+
 // Constructor & Destructor
 PoolAllocator::PoolAllocator(const uint64 total_size, const uint64 chunk_size)
     : Allocator(total_size) {

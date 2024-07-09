@@ -6,6 +6,8 @@
 
 namespace CORE_NAMESPACE {
 
+#define ALLOCATOR_LOG "StackAllocator :: "
+
 // Constructor & Destructor
 StackAllocator::StackAllocator(const uint64 total_size)
     : Allocator(total_size) {}

@@ -13,8 +13,6 @@
 //  For logs
     -   fatal           Note: Used only in Logger::fatal, not alone
     -   LOG_LOCATION    Node: Current file, line and function for output
-    // Would like to get rid of:
-    -   ALLOCATOR_LOG
 //  Property
     -   GET
     -   SET
@@ -33,13 +31,4 @@
     -   MEMORY_PADDING      Note: Memory padding used by allocators
     -   StringEnum          Note: `constexpr static const char* const` type
     -   STRING_ENUM(str)    Note: Used for custom "String" enum classes
-
-//  === Library specific ===
-//  Tiny loader
-    -   TINYOBJLOADER_IMPLEMENTATION (TODO: TEMP)
-//  GLM
-    -   GLM_FORCE_RADIANS
-    -   GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
-    -   GLM_FORCE_DEPTH_ZERO_TO_ONE
-    -   GLM_ENABLE_EXPERIMENTAL
 */

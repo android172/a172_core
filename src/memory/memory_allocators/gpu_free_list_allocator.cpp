@@ -6,6 +6,8 @@
 
 namespace CORE_NAMESPACE {
 
+#define ALLOCATOR_LOG "GPUFreeListAllocator :: "
+
 // Constructor & Destructor
 GPUFreeListAllocator::GPUFreeListAllocator(
     const uint64          totalSize,

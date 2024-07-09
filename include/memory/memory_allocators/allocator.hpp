@@ -4,8 +4,6 @@
 
 namespace CORE_NAMESPACE {
 
-#define ALLOCATOR_LOG "Allocator :: "
-
 /**
  * @brief Interface for a generic memory allocator. Provides elementary methods
  * required of any allocator.

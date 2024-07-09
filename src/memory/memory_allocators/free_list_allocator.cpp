@@ -2,9 +2,11 @@
 
 #include "logger.hpp"
 
-#include <algorithm> // std::max
+#include <algorithm>
 
 namespace CORE_NAMESPACE {
+
+#define ALLOCATOR_LOG "FreeListAllocator :: "
 
 // Constructor & Destructor
 FreeListAllocator::FreeListAllocator(

@@ -6,6 +6,8 @@
 
 namespace CORE_NAMESPACE {
 
+#define ALLOCATOR_LOG "LinearAllocator :: "
+
 // Constructor & Destructor
 LinearAllocator::LinearAllocator(const uint64 total_size)
     : Allocator(total_size) {}
