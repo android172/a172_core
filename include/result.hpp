@@ -6019,7 +6019,7 @@ inline RESULT_INLINE_VISIBILITY auto RESULT_NS_IMPL::swap(
 // #    pragma clang diagnostic pop
 #endif
 
-// #undef RESULT_NS_IMPL
+#undef RESULT_NS_IMPL
 #undef constexpr
 #undef RESULT_CPP17_INLINE
 #undef RESULT_INLINE_VISIBILITY

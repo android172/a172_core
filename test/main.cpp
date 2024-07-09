@@ -22,14 +22,15 @@
 #include <iostream>
 #include <type_traits>
 
-#include <mutex>
+#include "multithreading/parallel.hpp"
 
 using namespace CORE_NAMESPACE;
 
 int main() {
     std::mutex mtx;
 
-    mtx.lock();
-    Logger::log("H2W");
-    mtx.unlock();
+    parallel::for_each(int x, 0, 16) {
+        //
+        std::cout << x << std::endl;
+    };
 }

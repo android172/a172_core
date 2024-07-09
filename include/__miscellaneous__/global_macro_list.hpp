@@ -16,19 +16,26 @@
 //  Property
     -   GET
     -   SET
+    -   GET_V
 //  Result
     -   match_error(result)
     -   match_error_code(result)
     -   Err(error)
     -   Ok()
     -   check(result)
+// Serialization
+    -   serializable_attributes     Note: Defines default serialization and
+                                          deserialization behaviour for selected
+                                          attributes of serializable object
 //  Multithreading
-    -   for_loop
+    -   for_each
+    -   for_range
     -   for_loop_1 & for_loop_2
     -   GET_FOR_LOOP_MACRO
 //  General for use
     -   CORE_NAMESPACE
+    -   KB & MB & GB
     -   MEMORY_PADDING      Note: Memory padding used by allocators
-    -   StringEnum          Note: `constexpr static const char* const` type
+    -   CONST_STRING        Note: `constexpr static const char* const` type
     -   STRING_ENUM(str)    Note: Used for custom "String" enum classes
 */

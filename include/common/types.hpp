@@ -133,12 +133,12 @@ inline const constexpr float128 Infinity128 =
  * @brief This macro represents a constant static type. Used for building enum
  * objects out of strings. Must be used as class or struct attribute.
  */
-#define StringEnum constexpr static const char* const
+#define CONST_STRING constexpr static const char* const
 /**
- * @brief Declares and sets StringEnum to passed value. Must be used  as class
- * or struct attribute. Attribute value set to literal stringification of
+ * @brief Declares and sets CONST_STRING to passed value. Must be used  as
+ * class or struct attribute. Attribute value set to literal stringification of
  * attribute name.
  */
-#define STRING_ENUM(x) StringEnum x = #x
+#define STRING_ENUM(x) CONST_STRING x = #x
 
 } // namespace CORE_NAMESPACE
