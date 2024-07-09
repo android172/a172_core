@@ -1,3 +1,13 @@
+/**
+ * @file file.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Holds definitions for generic files, text files and binary files
+ * @version 0.1
+ * @date 2024-07-10
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
 #include <fstream>
@@ -9,7 +19,7 @@
 namespace CORE_NAMESPACE {
 
 /**
- * @brief Input file
+ * @brief Generic input only file type
  */
 template<typename T>
 class FileIn : public std::ifstream {
@@ -24,7 +34,7 @@ class FileIn : public std::ifstream {
 };
 
 /**
- * @brief Output file
+ * @brief Generic output only file type
  */
 template<typename T>
 class FileOut : public std::ofstream {
@@ -35,7 +45,7 @@ class FileOut : public std::ofstream {
 };
 
 /**
- * @brief IO File
+ * @brief Generic IO file type
  */
 template<typename T>
 class File : public FileIn<T>, FileOut<T> {
@@ -47,6 +57,9 @@ class File : public FileIn<T>, FileOut<T> {
 // ///////// //
 // Text file //
 // ///////// //
+/**
+ * @brief Text input file. Decodes stream into text.
+ */
 class TextFileIn : public FileIn<String> {
     virtual String read(const uint64 size) override {
         char* buffer = new (BaseMemoryTags.Temp) char(size);
@@ -56,6 +69,11 @@ class TextFileIn : public FileIn<String> {
         return result;
     }
 };
+
+/**
+ * @brief Text output file. Encodes text for stream.
+ *
+ */
 class TextFileOut : public FileOut<String> {
     virtual void write(const String& data) override {
         std::ofstream::write(data.data(), data.size());
@@ -72,11 +90,20 @@ class TextFileOut : public FileOut<String> {
         write(data..., "\n");
     }
 };
+
+/**
+ * @brief Text file. Operates on encoded text stream.
+ */
 typedef File<String> TextFile;
 
 // ////////////// //
 // TextLines file //
 // ////////////// //
+/**
+ * @brief Per line text input file. Decodes input stream as text, one line
+ * at a time.
+ *
+ */
 class LinesFileIn : public FileIn<Vector<String>> {
     Vector<String> read(const uint64 size) override {
         Vector<String> lines;
@@ -86,18 +113,27 @@ class LinesFileIn : public FileIn<Vector<String>> {
         return lines;
     }
 };
+/**
+ * @brief Per line text output file. Encodes provided lines for output stream.
+ */
 class LinesFileOut : public FileOut<Vector<String>> {
     void write(const Vector<String>& data) override {
         for (const auto& line : data)
             std::ofstream::write(line.data(), line.size());
     }
 };
+
+/**
+ * @brief Line based text file. Operates word lists, interpreted as text lines.
+ */
 typedef File<Vector<String>> LinesFile;
 
 // /////////// //
 // Binary file //
 // /////////// //
-
+/**
+ * @brief Binary input file. Reads input stream byte by byte
+ */
 class BinaryFileIn : public FileIn<Vector<byte>> {
     virtual Vector<byte> read(const uint64 size) override {
         Vector<byte> buffer(size);
@@ -106,11 +142,18 @@ class BinaryFileIn : public FileIn<Vector<byte>> {
         return buffer;
     }
 };
+/**
+ * @brief Binary output file. Writes arbitrary binary data to stream.
+ */
 class BinaryFileOut : public FileOut<Vector<byte>> {
     virtual void write(const Vector<char>& data) override {
         std::ofstream::write(data.data(), data.size());
     }
 };
+
+/**
+ * @brief Binary file. Operates on binary data, one byte at a time.
+ */
 typedef File<Vector<byte>> BinaryFile;
 
 } // namespace CORE_NAMESPACE

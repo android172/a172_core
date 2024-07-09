@@ -14,6 +14,7 @@
 #include "container/vector.hpp"
 
 #include "files/file_system.hpp"
+#include "result.hpp"
 #include "string.hpp"
 
 #include <array>
@@ -22,15 +23,18 @@
 #include <iostream>
 #include <type_traits>
 
-#include "multithreading/parallel.hpp"
-
 using namespace CORE_NAMESPACE;
 
-int main() {
-    std::mutex mtx;
+Result<int, int> fn(int x) {
+    if (x % 3 == 0) return 1;
+    return Failure(x % 3 == 1);
+}
 
-    parallel::for_each(int x, 0, 16) {
-        //
-        std::cout << x << std::endl;
-    };
+int main() {
+    const auto r = fn(34);
+    match_error(r) {
+        Err(0) { Logger::log("There was an error : 0"); }
+        Err(1) { Logger::log("There was an error : 1"); }
+        Ok() { Logger::log("There was no errors"); }
+    }
 }
