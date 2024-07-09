@@ -1,3 +1,15 @@
+/**
+ * @file platform.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Provides abstraction layer for platform specific functionality.
+ * Accessed via `platform` namespace.
+ * @version 0.1
+ * @date 2024-07-10
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
+
 #pragma once
 
 #include <string>
