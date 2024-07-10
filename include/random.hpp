@@ -1,3 +1,13 @@
+/**
+ * @file random.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Random functions
+ * @version 0.1
+ * @date 2024-07-10
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
 #include "common/types.hpp"
