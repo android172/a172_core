@@ -1,3 +1,13 @@
+/**
+ * @file string.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Holds String related functionality.
+ * @version 0.1
+ * @date 2024-07-10
+ *
+ * @copyright Copyright (c) 2024
+ *
+ */
 #pragma once
 
 #include <string>
@@ -24,6 +34,11 @@ string to_string(const CORE_NAMESPACE::Vector<unsigned char>& in);
 } // namespace std
 
 namespace CORE_NAMESPACE {
+
+/**
+ * @brief String (array of characters). Extends std::string, with some
+ * additional methods
+ */
 class String : public std::string {
   public:
     using std::string::string;
@@ -47,32 +62,32 @@ class String : public std::string {
 
     // Transform
     /// @brief Transform all string characters to lowercase (inplace)
-    void to_lower() noexcept;
+    String& to_lower() noexcept;
     /// @brief Transform all string characters to uppercase (inplace)
-    void to_upper() noexcept;
+    String& to_upper() noexcept;
 
     /// @brief Get transformed copy of the string, with all characters lowercase
-    String lower_c() const noexcept;
+    static String to_lower(const String& str) noexcept;
     /// @brief Get transformed copy of the string, with all characters uppercase
-    String upper_c() const noexcept;
+    static String to_upper(const String& str) noexcept;
 
     // Trim
     /// @brief Removes all white-space characters from left side (Inplace)
-    void trim_left() noexcept;
+    String& trim_left() noexcept;
     /// @brief Removes all white-space characters from right side (Inplace)
-    void trim_right() noexcept;
+    String& trim_right() noexcept;
     /// @brief Removes all white-space characters from both sides (Inplace)
-    void trim() noexcept;
+    String& trim() noexcept;
 
     /// @brief Get transformed copy of the string, with all white-space
     /// characters removed from left side
-    String trimmed_left_c() const noexcept;
+    static String trim_left(const String& str) noexcept;
     /// @brief Get transformed copy of the string, with all white-space
     /// characters removed from right side
-    String trimmed_right_c() const noexcept;
+    static String trim_right(const String& str) noexcept;
     /// @brief Get transformed copy of the string, with all white-space
     /// characters removed from both sides
-    String trimmed_c() const noexcept;
+    static String trim(const String& str) noexcept;
 
     // Comparison
     /**

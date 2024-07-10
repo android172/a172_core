@@ -25,16 +25,9 @@
 
 using namespace CORE_NAMESPACE;
 
-Result<int, int> fn(int x) {
-    if (x % 3 == 0) return 1;
-    return Failure(x % 3 == 1);
-}
-
 int main() {
-    const auto r = fn(34);
-    match_error(r) {
-        Err(0) { Logger::log("There was an error : 0"); }
-        Err(1) { Logger::log("There was an error : 1"); }
-        Ok() { Logger::log("There was no errors"); }
-    }
+    String a = " BlaBlaBla  ";
+    auto   b = String::trim(a).to_upper();
+    Logger::log("|", a, "|");
+    Logger::log("|", b, "|");
 }

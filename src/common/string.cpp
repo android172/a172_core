@@ -24,48 +24,55 @@ String::~String() noexcept {}
 // /////////////////////// //
 
 #define copy_method(inplace_method)                                            \
-    String copy { *this };                                                     \
+    String copy { str };                                                       \
     copy.inplace_method();                                                     \
     return copy
 
 // Character transforms
-void String::to_lower() noexcept {
+String& String::to_lower() noexcept {
     std::transform(
         this->cbegin(),
         this->cend(),
         this->begin(), // write to the same location
         [](uchar c) { return std::tolower(c); }
     );
+    return *this;
 }
-void String::to_upper() noexcept {
+String& String::to_upper() noexcept {
     std::transform(
         this->cbegin(),
         this->cend(),
         this->begin(), // write to the same location
         [](uchar c) { return std::toupper(c); }
     );
+    return *this;
 }
 
-String String::lower_c() const noexcept { copy_method(to_lower); }
-String String::upper_c() const noexcept { copy_method(to_upper); }
+String String::to_lower(const String& str) noexcept { copy_method(to_lower); }
+String String::to_upper(const String& str) noexcept { copy_method(to_upper); }
 
 // Trim methods
-void String::trim_left() noexcept {
+String& String::trim_left() noexcept {
     auto is_space = [](uchar ch) { return !std::isspace(ch); };
     erase(begin(), std::find_if(begin(), end(), is_space));
+    return *this;
 }
-void String::trim_right() noexcept {
+String& String::trim_right() noexcept {
     auto is_space = [](uchar ch) { return !std::isspace(ch); };
     erase(std::find_if(rbegin(), rend(), is_space).base(), end());
+    return *this;
 }
-void String::trim() noexcept {
+String& String::trim() noexcept {
     trim_left();
     trim_right();
+    return *this;
 }
 
-String String::trimmed_left_c() const noexcept { copy_method(trim_left); }
-String String::trimmed_right_c() const noexcept { copy_method(trim_right); }
-String String::trimmed_c() const noexcept { copy_method(trim); }
+String String::trim_left(const String& str) noexcept { copy_method(trim_left); }
+String String::trim_right(const String& str) noexcept {
+    copy_method(trim_right);
+}
+String String::trim(const String& str) noexcept { copy_method(trim); }
 
 // Compare methods
 int32 String::compare_ci(const String& other) const {
