@@ -54,55 +54,20 @@ class FileSystem {
     }
 
     /**
-     * @brief Opens file for input and output. Will fails if file doesn't exist.
+     * @brief Opens file for input and/or output. Will fails if file doesn't
+     * exist.
      *
      * @param file_path File path
      * @param mode Active file open modes
      * @return File If successful
      * @throw RuntimeError Otherwise
      */
-    template<typename T>
-    static Result<std::unique_ptr<File<T>>, RuntimeError> open(
+    template<typename FileT>
+    static Result<std::unique_ptr<File<FileT>>, RuntimeError> open(
         const Path& file_path, OpenMode mode = {}
     ) {
-        auto file = std::make_unique<File<T>>(
-            file_path, std::ios::in | std::ios::out | mode
-        );
+        auto file = std::make_unique<File<FileT>>(file_path, mode);
         if (!file->is_open()) return error_cant_open(file_path);
-        return file;
-    }
-    /**
-     * @brief Opens file for input. Will fails if file doesn't exist.
-     *
-     * @param file_path File path
-     * @param mode Active file open modes
-     * @return File If successful
-     * @throw RuntimeError Otherwise
-     */
-    template<typename T>
-    static Result<std::unique_ptr<FileIn<T>>, RuntimeError> open_input(
-        const Path& file_path, OpenMode mode = {}
-    ) {
-        auto file = std::make_unique<FileIn<T>>(file_path, std::ios::in | mode);
-        if (!file->is_open()) return error_cant_open(file_path);
-        return file;
-    }
-    /**
-     * @brief Opens file for output. Will fails if file doesn't exist.
-     *
-     * @param file_path File path
-     * @param mode Active file open modes
-     * @return File If successful
-     * @throw RuntimeError Otherwise
-     */
-    template<typename T>
-    static Result<std::unique_ptr<FileOut<T>>, RuntimeError> open_output(
-        const Path& file_path, OpenMode mode = {}
-    ) {
-        if (!exists(file_path)) error_nonexistant_path(file_path);
-        auto file =
-            std::make_unique<FileOut<T>>(file_path, std::ios::out | mode);
-        if (!file->is_open()) error_cant_open(file_path);
         return file;
     }
 
@@ -115,8 +80,8 @@ class FileSystem {
      * @return File If successful
      * @throw RuntimeError Otherwise
      */
-    template<typename T>
-    static Result<std::unique_ptr<FileOut<T>>, RuntimeError> create(
+    template<typename FileT>
+    static Result<std::unique_ptr<File<FileT>>, RuntimeError> create(
         const Path& file_path, OpenMode mode = {}
     ) {
         // Check existence
@@ -127,8 +92,7 @@ class FileSystem {
         std::filesystem::create_directories(file_path.parent_path());
 
         // Create & open file
-        auto file =
-            std::make_unique<FileOut<T>>(file_path, std::ios::out | mode);
+        auto file = std::make_unique<File<FileT>>(file_path, mode);
         if (!file->is_open()) return error_creation_failed(file_path);
         return file;
     }
@@ -142,8 +106,8 @@ class FileSystem {
      * @return File If successful
      * @throw RuntimeError Otherwise
      */
-    template<typename T>
-    static Result<std::unique_ptr<FileOut<T>>, RuntimeError> create_or_open(
+    template<typename FileT>
+    static Result<std::unique_ptr<File<FileT>>, RuntimeError> create_or_open(
         const Path& file_path, OpenMode mode = {}
     ) {
         // Check existence
@@ -152,8 +116,7 @@ class FileSystem {
             std::filesystem::create_directories(file_path.parent_path());
 
         // Create & open file
-        auto file =
-            std::make_unique<FileOut<T>>(file_path, std::ios::out | mode);
+        auto file = std::make_unique<File<FileT>>(file_path, mode);
         if (!file->is_open()) return error_creation_failed(file_path);
         return file;
     }
@@ -161,13 +124,13 @@ class FileSystem {
     /**
      * @brief Opens and fully reads a given file
      *
-     * @param file_path File path, separated by dashes ('/')
-     * @return All file bytes as Vector<byte> if successful
-     * @throw RuntimeError otherwise
+     * @param file_path File path
+     * @return T All file data if successful
+     * @throw RuntimeError Otherwise
      */
-    template<typename T>
+    template<typename T, typename FileT>
     static Result<T, RuntimeError> read_all(const Path& file_path) {
-        FileIn<T>  file   = open_input<T>(file_path, std::ios::ate);
+        auto       file   = open<FileT>(file_path, std::ios::ate);
         const auto buffer = file.read_all();
         file.close();
         return buffer;

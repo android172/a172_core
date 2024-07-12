@@ -45,8 +45,8 @@ class GPUFreeListAllocator : public Allocator {
      * @param ptr Memory location (relative to initial in-buffer offset) of
      * segment's beginning
      * @param size Segment size
-     * @returns true If a segment of this size is allocated at this location
-     * @returns false Otherwise
+     * @return true If a segment of this size is allocated at this location
+     * @return false Otherwise
      */
     bool allocated(const void* ptr, const uint64 size);
 

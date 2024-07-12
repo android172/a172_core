@@ -20,6 +20,9 @@ namespace CORE_NAMESPACE {
 /**
  * @brief Path type. Denotes location of resources in local file system.
  */
-class Path : public std::filesystem::path {};
+class Path : public std::filesystem::path {
+  public:
+    using std::filesystem::path::path;
+};
 
 } // namespace CORE_NAMESPACE

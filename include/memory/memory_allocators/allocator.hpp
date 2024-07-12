@@ -35,7 +35,7 @@ class Allocator {
      *
      * @param size Size requirement in bytes
      * @param alignment Required memory alignment (by default disabled).
-     * @return void* to the beginning of the allocated segment
+     * @return void* The beginning of the allocated segment
      */
     virtual void* allocate(const uint64 size, const uint64 alignment = 0);
     /**
@@ -54,8 +54,8 @@ class Allocator {
      * @brief Checks if a memory location was allocated by this allocator
      *
      * @param ptr Pointer to a location in memory
-     * @returns true If relevant memory was allocated by this allocator
-     * @returns false Otherwise
+     * @return true If relevant memory was allocated by this allocator
+     * @return false Otherwise
      */
     virtual bool  owns(void* ptr);
 

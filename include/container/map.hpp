@@ -151,7 +151,8 @@ class Map : public std::map<_Key, _Tp, _Compare, TAllocator<_Tp>> {
      * @brief Check whether the %Map contains a given key.
      *
      * @param __key Key to search for.
-     * @returns true if %Map contains the key; false otherwise.
+     * @return true If %Map contains the key
+     * @return false Otherwise
      */
     bool contains(const _Key& __key) const {
         const auto& i = this->find(__key);

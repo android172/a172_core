@@ -1,3 +1,12 @@
+/**
+ * @file serializer.hpp
+ * @author Android172 (android172unity@gmail.com)
+ * @brief Defines generic serializer class
+ * @version 0.1
+ * @date 2024-07-12
+ *
+ * @copyright Copyright (c) 2024
+ */
 #pragma once
 
 #include "serializable.hpp"
@@ -43,7 +52,7 @@ class Serializer {
      * @return uint32 The number of bytes used for the deserialization which can
      * be used for advancing the position in the string to deserialize next
      * data.
-     * @throws RuntimeError If serialization fails.
+     * @throw RuntimeError If serialization fails.
      */
     template<typename... T>
     Result<uint32, RuntimeError> deserialize(

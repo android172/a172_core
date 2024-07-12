@@ -143,7 +143,8 @@ class UnorderedMap
      * @brief Check whether the %UnorderedMap contains a given key.
      *
      * @param __key Key to search for.
-     * @returns true if %UnorderedMap contains the key; false otherwise.
+     * @return true If %UnorderedMap contains the key
+     * @return false Otherwise
      */
     bool contains(const _Key& __key) const {
         const auto& i = this->find(__key);

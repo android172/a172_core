@@ -1,7 +1,7 @@
 /**
  * @file file.hpp
  * @author Android172 (android172unity@gmail.com)
- * @brief Holds definitions for generic files, text files and binary files
+ * @brief Holds definitions for generic file object used by file system
  * @version 0.1
  * @date 2024-07-10
  *
@@ -12,148 +12,119 @@
 
 #include <fstream>
 
-#include "common/defines.hpp"
-#include "string.hpp"
-#include "container/vector.hpp"
+#include "common/types.hpp"
 
 namespace CORE_NAMESPACE {
 
-/**
- * @brief Generic input only file type
- */
-template<typename T>
-class FileIn : public std::ifstream {
-  public:
-    using std::ifstream::ifstream;
+namespace fs_details {
+    template<typename IFS>
+    class FileInBase : public virtual IFS {
+      public:
+        using IFS::IFS;
+    };
+    template<typename OFS>
+    class FileOutBase : public virtual OFS {
+      public:
+        using OFS::OFS;
+    };
+} // namespace fs_details
 
-    virtual T read(const uint64 size);
+/**
+ * @brief Generic input only file type. Concrete input file type needs to extend
+ * this class.
+ * @tparam T Data type this file type operates on
+ */
+template<typename T, typename IFS>
+class FileIn : public virtual fs_details::FileInBase<IFS> {
+  public:
+    using fs_details::FileInBase<IFS>::FileInBase;
+
+    /**
+     * @brief Read next @p size tokes from stream.
+     *
+     * @param size Total size read
+     * @return T Resulting data
+     */
+    virtual T read(const uint64 size) = 0;
+    /**
+     * @brief Read all file content at once
+     * @return T Resulting data
+     */
     virtual T read_all() {
-        const auto file_size = static_cast<uint64>(this->tellg());
+        IFS::seekg(0, std::ios::end);
+        const auto file_size = static_cast<uint64>(IFS::tellg());
+        IFS::seekg(0);
         return read(file_size);
     }
 };
 
 /**
- * @brief Generic output only file type
+ * @brief Generic output only file type. Concrete output file type needs to
+ * extend this class.
+ * @tparam T Data type this file type operates on
  */
-template<typename T>
-class FileOut : public std::ofstream {
+template<typename T, typename OFS>
+class FileOut : public virtual fs_details::FileOutBase<OFS> {
   public:
-    using std::ofstream::ofstream;
+    using fs_details::FileOutBase<OFS>::FileOutBase;
 
-    virtual void write(const T& data);
+    /**
+     * @brief Write out provided data
+     * @param data Data to be written
+     */
+    virtual void write(const T& data) = 0;
 };
 
 /**
- * @brief Generic IO file type
+ * @brief Generic IO file type. Concrete IO file type needs to extend or typedef
+ * around this class.
  */
-template<typename T>
-class File : public FileIn<T>, FileOut<T> {
+template<typename FileIn, typename FileOut>
+class FileIO : public virtual FileIn, public virtual FileOut {};
+
+/**
+ * @brief File object of certain type. Extends `std::fstream` functionality,
+ * together with extensions specified by file type. Behaves like `std::ifstream`
+ * (`std::ofstream`) if `FileIn` (`FileOut`) is passed as file type. Otherwise
+ * (with `FileIO`) both behaviors are supported.
+ *
+ * @tparam FileType Type of this file. Describes what data is used for IO and
+ * how.
+ */
+template<typename FileType, typename = void>
+class File;
+
+template<typename FileType>
+class File<
+    FileType,
+    typename std::enable_if_t<
+        std::is_base_of_v<fs_details::FileInBase<std::ifstream>, FileType> &&
+        !std::is_base_of_v<fs_details::FileOutBase<std::ofstream>, FileType>>>
+    : public FileType {
   public:
-    using FileIn<T>::FileIn;
-    using FileOut<T>::FileOut;
+    using FileType::FileType;
 };
 
-// ///////// //
-// Text file //
-// ///////// //
-/**
- * @brief Text input file. Decodes stream into text.
- */
-class TextFileIn : public FileIn<String> {
-    virtual String read(const uint64 size) override {
-        char* buffer = new (BaseMemoryTags.Temp) char(size);
-        auto  n      = std::ifstream::readsome(buffer, size);
-        auto  result = n ? String(std::string(buffer, n)) : "";
-        del(buffer);
-        return result;
-    }
+template<typename FileType>
+class File<
+    FileType,
+    typename std::enable_if_t<
+        !std::is_base_of_v<fs_details::FileInBase<std::ifstream>, FileType> &&
+        std::is_base_of_v<fs_details::FileOutBase<std::ofstream>, FileType>>>
+    : public FileType {
+  public:
+    using FileType::FileType;
 };
 
-/**
- * @brief Text output file. Encodes text for stream.
- *
- */
-class TextFileOut : public FileOut<String> {
-    virtual void write(const String& data) override {
-        std::ofstream::write(data.data(), data.size());
-    }
-
-    template<typename... Args>
-    void write(const Args&... data) {
-        const auto all_data = String::build(data...);
-        std::ofstream::write(all_data.data(), all_data.size());
-    }
-
-    template<typename... Args>
-    void write_ln(const Args&... data) {
-        write(data..., "\n");
-    }
+template<typename FileType>
+class File<
+    FileType,
+    typename std::enable_if_t<
+        std::is_base_of_v<fs_details::FileInBase<std::fstream>, FileType> &&
+        std::is_base_of_v<fs_details::FileOutBase<std::fstream>, FileType>>>
+    : public FileType {
+  public:
+    using FileType::FileType;
 };
-
-/**
- * @brief Text file. Operates on encoded text stream.
- */
-typedef File<String> TextFile;
-
-// ////////////// //
-// TextLines file //
-// ////////////// //
-/**
- * @brief Per line text input file. Decodes input stream as text, one line
- * at a time.
- *
- */
-class LinesFileIn : public FileIn<Vector<String>> {
-    Vector<String> read(const uint64 size) override {
-        Vector<String> lines;
-        String         line;
-        while (std::getline(*this, line))
-            lines.push_back(line);
-        return lines;
-    }
-};
-/**
- * @brief Per line text output file. Encodes provided lines for output stream.
- */
-class LinesFileOut : public FileOut<Vector<String>> {
-    void write(const Vector<String>& data) override {
-        for (const auto& line : data)
-            std::ofstream::write(line.data(), line.size());
-    }
-};
-
-/**
- * @brief Line based text file. Operates word lists, interpreted as text lines.
- */
-typedef File<Vector<String>> LinesFile;
-
-// /////////// //
-// Binary file //
-// /////////// //
-/**
- * @brief Binary input file. Reads input stream byte by byte
- */
-class BinaryFileIn : public FileIn<Vector<byte>> {
-    virtual Vector<byte> read(const uint64 size) override {
-        Vector<byte> buffer(size);
-        this->seekg(0);
-        std::ifstream::read(buffer.data(), size);
-        return buffer;
-    }
-};
-/**
- * @brief Binary output file. Writes arbitrary binary data to stream.
- */
-class BinaryFileOut : public FileOut<Vector<byte>> {
-    virtual void write(const Vector<char>& data) override {
-        std::ofstream::write(data.data(), data.size());
-    }
-};
-
-/**
- * @brief Binary file. Operates on binary data, one byte at a time.
- */
-typedef File<Vector<byte>> BinaryFile;
 
 } // namespace CORE_NAMESPACE

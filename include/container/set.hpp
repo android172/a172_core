@@ -144,7 +144,8 @@ class Set : public std::set<_Key, _Compare, TAllocator<_Key>> {
      * @brief Checks whether %Set contains a given key
      *
      * @param __key Key to search for
-     * @returns true if %Set contains the key; false otherwise
+     * @return true If %Set contains the key
+     * @return false Otherwise
      */
     bool contains(const _Key& __key) const {
         const auto& i = this->find(__key);

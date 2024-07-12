@@ -36,7 +36,7 @@ namespace platform {
     const bool is_little_endian = *(char*) &__details::n == 1;
 
     /// @brief Get current internal clock time in seconds
-    /// @return Time in seconds
+    /// @return float64 Time in seconds
     float64 get_absolute_time();
 
     /// @brief Suspends the application process for the specified amount of time
@@ -69,7 +69,7 @@ namespace platform {
         /**
          * @brief Read plain text from console
          *
-         * @return std::string
+         * @return std::string Read text
          */
         static std::string read();
     };

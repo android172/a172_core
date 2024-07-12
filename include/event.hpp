@@ -92,8 +92,8 @@ class Event<R(Args...)> {
      * Detaches one instance of attached method from the list.
      *
      * @param callback Method to detach.
-     * @return true - if a method was detached
-     * @return false - if no such method was found
+     * @return true If a method was detached
+     * @return false If no such method was found
      */
     template<typename T>
     Outcome unsubscribe(T* caller, R (T::*callback)(Args...)) {
@@ -107,8 +107,8 @@ class Event<R(Args...)> {
      * Detaches one instance of attached function from the list.
      *
      * @param callback Function to detach.
-     * @return true - if a function was detached
-     * @return false - if no such function was found
+     * @return true If a function was detached
+     * @return false If no such function was found
      */
     Outcome unsubscribe(std::function<R(Args...)> callback) {
         auto delegate = new (BaseMemoryTags.Callback)
@@ -120,7 +120,7 @@ class Event<R(Args...)> {
      * @brief Invoke all subscribed callbacks with the passed arguments.
      *
      * @param arguments Arguments to be passed to callbacks.
-     * @return Returns value returned by the last invoked callback.
+     * @return R Value returned by the last invoked callback.
      */
     R invoke(Args... arguments) {
         R result;
@@ -199,8 +199,8 @@ class Event<void(Args...)> {
      * Detaches one instance of attached method from the list.
      *
      * @param callback Method to detach.
-     * @return true - if a method was detached
-     * @return false - if no such method was found
+     * @return true If a method was detached
+     * @return false If no such method was found
      */
     template<typename T>
     Outcome unsubscribe(T* caller, void (T::*callback)(Args...)) {
@@ -214,8 +214,8 @@ class Event<void(Args...)> {
      * Detaches one instance of attached function from the list.
      *
      * @param callback Function to detach.
-     * @return true - if a function was detached
-     * @return false - if no such function was found
+     * @return true If a function was detached
+     * @return false If no such function was found
      */
     Outcome unsubscribe(std::function<void(Args...)> callback) {
         auto delegate = new (BaseMemoryTags.Callback)

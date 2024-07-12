@@ -223,7 +223,7 @@ inline unique_ptr<_Tp[]> make_unique(
  *  @brief  Create an object that is owned by a shared_ptr.
  *  @param  tag  Memory tag
  *  @param  __args  Arguments for the @a _Tp object's constructor.
- *  @return A shared_ptr that owns the newly created object.
+ *  @return shared_ptr<_Tp> A shared_ptr that owns the newly created object.
  *  @throw  std::bad_alloc, or an exception thrown from the
  *          constructor of @a _Tp.
  */
