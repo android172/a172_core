@@ -16,7 +16,7 @@
 //  Property
     -   GET
     -   SET
-    -   GET_V
+    -   GETSET
 //  Result
     -   match_error(result)
     -   match_error_code(result)

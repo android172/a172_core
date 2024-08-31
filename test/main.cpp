@@ -1,158 +1,64 @@
-#include "common/error_types.hpp"
-#include "common/types.hpp"
-#include "event.hpp"
-#include "files/file.hpp"
-#include "files/path.hpp"
 #include "logger.hpp"
-#include "multithreading/parallel.hpp"
 #include "property.hpp"
-#include "common/type_traits.hpp"
-
-#include "container/forward_list.hpp"
-#include "container/list.hpp"
-#include "container/map.hpp"
-#include "container/set.hpp"
-#include "container/unordered_map.hpp"
-#include "container/vector.hpp"
-
-#include "files/file_system.hpp"
-#include "result.hpp"
-#include "serialization/binary_serializer.hpp"
-#include "serialization/serializable.hpp"
-#include "string.hpp"
-
-#include <array>
-#include <cmath>
-#include <cstddef>
-#include <fstream>
 #include <functional>
-#include <ios>
-#include <iostream>
-#include <iterator>
-#include <type_traits>
 
-using namespace CORE_NAMESPACE;
+using namespace a172;
 
-class Dummy : public Serializable {
+int global = 3;
+class B {
   public:
-    String x1 = "Some Text";
-    int    x2 = 12;
-    float  x3 = 12.31;
+    B(int a) : _a(a) {}
+    B(B& b) : _a(b.a) {} //, _a2(b._a2) {}
 
-    serializable_attributes(x1, x2, x3);
+    Property<int>   a { GETSET _a };
+    Property<int&>  a2 { GETSET global };
+    Property<int&&> a3 { _a };
 
-    String to_string() { return String::build(x1, " | ", x2, " | ", x3); }
-};
+    int _a;
+    // int& _a2 = global;
 
-template<typename IFStream>
-class A1 : public virtual IFStream {
-  public:
-    using IFStream::IFStream;
-};
-template<typename OFStream>
-class A2 : public virtual OFStream {
-  public:
-    using OFStream::OFStream;
-};
-
-template<typename T, typename IFStream>
-class B1 : public virtual A1<IFStream> {
-  public:
-    using A1<IFStream>::A1;
-    virtual void m1(const T& a = {}) = 0;
-};
-template<typename T, typename OFStream>
-class B2 : public virtual A2<OFStream> {
-  public:
-    using A2<OFStream>::A2;
-    virtual void m2(const T& a = {}) = 0;
-};
-
-template<typename B1, typename B2>
-class B3 : public virtual B1, public virtual B2 {
-    using B1::B1;
-};
-
-template<typename IFStream>
-class D1B : public virtual B1<String, IFStream> {
-  public:
-    using B1<String, IFStream>::B1;
-
-    virtual void m1(const String& a = {}) override {
-        Logger::log(IFStream::is_open());
-        Logger::log("M1");
-    }
-};
-template<typename OFStream>
-class D2B : public virtual B2<String, OFStream> {
-  public:
-    using B2<String, OFStream>::B2;
-
-    virtual void m2(const String& a = {}) override {
-        Logger::log(OFStream::is_open());
-        Logger::log("M2");
-    }
-};
-typedef D1B<std::ifstream>                       D1;
-typedef D2B<std::ofstream>                       D2;
-typedef B3<D1B<std::fstream>, D2B<std::fstream>> D3;
-
-template<typename D, typename = void>
-class C;
-
-template<typename D>
-class C<
-    D,
-    typename std::enable_if_t<
-        std::is_base_of_v<A1<std::ifstream>, D> &&
-        !std::is_base_of_v<A2<std::ofstream>, D>>> : public D {
-  public:
-    using D::D;
-};
-
-template<typename D>
-class C<
-    D,
-    typename std::enable_if_t<
-        !std::is_base_of_v<A1<std::ifstream>, D> &&
-        std::is_base_of_v<A2<std::ofstream>, D>>> : public D {
-  public:
-    using D::D;
-};
-
-template<typename D>
-class C<
-    D,
-    typename std::enable_if_t<
-        std::is_base_of_v<A1<std::fstream>, D> &&
-        std::is_base_of_v<A2<std::fstream>, D>>> : public D {
-  public:
-    using D::D;
+    // ...
 };
 
 int main() {
-    const auto path = Path("./ef.txt");
+    Logger::log("Hi");
 
-    // C<D1> c1 { path };
-    // C<D2> c2 {};
-    // C<D3> c3 {};
+    B b1 { 5 };
+    B b2 { 12 };
 
-    // c1.m1();
-    // c2.m2();
-    // c3.m1();
-    // c3.m2();
-    // Logger::log(c3.is_open());
+    Logger::log(b1.a());
+    Logger::log(b2.a());
+    Logger::log(b1.a3());
 
-    auto du = Dummy();
+    b1   = b2;
+    b1.a = 15;
+    b2.a = 50;
 
-    const auto bs = BinarySerializer();
+    Logger::log(b1.a());
+    Logger::log(b2.a());
 
-    const auto res = du.serialize(&bs);
-    Logger::log(res);
+    B b3 { b1 };
+    b1.a = 56;
 
-    Logger::log(path.string());
+    Logger::log(b1.a());
+    Logger::log(b3.a());
 
-    const auto result = du.deserialize_from_file(path, &bs);
-    Logger::log(result.has_error());
-    if (result.has_error()) Logger::log(result.error().what());
+    Logger::log(b1.a2());
+    Logger::log(b2.a2());
+
+    int c = 91;
+    b1.a2 = c;
+
+    Logger::log(b1.a2());
+    Logger::log(b2.a2());
+
+    b1.a2 = 92;
+
+    Logger::log(b1.a2());
+    Logger::log(b2.a2());
+
+    Logger::log(global);
+    Logger::log(b1.a3());
+
+    return 0;
 }
